@@ -1,0 +1,56 @@
+{
+  "name": "nestjs-realworld-example-app",
+  "version": "1.0.0",
+  "description": "[![Build Status](https://travis-ci.org/anishkny/node-express-realworld-example-app.svg?branch=master)](https://travis-ci.org/anishkny/node-express-realworld-example-app)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start:watch": "nodemon",
+    "prestart:prod": "tsc",
+    "start:prod": "node dist/main.js",
+    "test": "jest --config=jest.json",
+    "test:watch": "jest --watch --config=jest.json",
+    "test:coverage": "jest --config=jest.json --coverage --coverageDirectory=coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lujakob/nestjs-realworld-example-app.git"
+  },
+  "author": "lu.jakob@googlemail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lujakob/nestjs-realworld-example-app/issues"
+  },
+  "homepage": "https://github.com/lujakob/nestjs-realworld-example-app#readme",
+  "dependencies": {
+    "@nestjs/common": "^5.6.2",
+    "@nestjs/core": "^5.6.2",
+    "@nestjs/microservices": "^5.6.2",
+    "@nestjs/swagger": "^2.5.1",
+    "@nestjs/testing": "^5.6.2",
+    "@nestjs/typeorm": "^5.2.2",
+    "@nestjs/websockets": "^5.6.2",
+    "class-transformer": "^0.2.0",
+    "class-validator": "^0.9.1",
+    "crypto": "^1.0.1",
+    "crypto-js": "^3.1.9-1",
+    "jsonwebtoken": "^8.1.1",
+    "mysql": "^2.15.0",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "reflect-metadata": "^0.1.12",
+    "rxjs": "^6.4.0",
+    "slug": "^0.9.1",
+    "typeorm": "^0.2.12",
+    "typescript": "^3.3.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.13",
+    "@types/node": "^10.12.21",
+    "jest": "^24.0.0",
+    "nodemon": "^1.15.0",
+    "supertest": "^3.0.0",
+    "ts-jest": "^23.10.5",
+    "ts-node": "^8.0.2"
+  }
+}
