@@ -1,13 +1,15 @@
+import { DeleteResult, getRepository, Repository } from 'typeorm';
+
 import { Component, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, getRepository, DeleteResult } from 'typeorm';
-import { ArticleEntity } from './article.entity';
-import { Comment } from './comment.entity';
-import { UserEntity } from '../user/user.entity';
+
 import { FollowsEntity } from '../profile/follows.entity';
+import { UserEntity } from '../user/user.entity';
+import { ArticleEntity } from './article.entity';
+import { ArticleRO, ArticlesRO, CommentsRO } from './article.interface';
+import { Comment } from './comment.entity';
 import { CreateArticleDto } from './dto';
 
-import {ArticleRO, ArticlesRO, CommentsRO} from './article.interface';
 const slug = require('slug');
 
 @Injectable()
@@ -23,27 +25,27 @@ export class ArticleService {
     private readonly followsRepository: Repository<FollowsEntity>
   ) {}
 
-  async findAll(query): Promise<ArticlesRO> {
+  public async findAll(query: any): Promise<ArticlesRO> {
 
     const qb = await getRepository(ArticleEntity)
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.author', 'author');
 
-    qb.where("1 = 1");
+    qb.where('1 = 1');
 
     if ('tag' in query) {
-      qb.andWhere("article.tagList LIKE :tag", { tag: `%${query.tag}%` });
+      qb.andWhere('article.tagList LIKE :tag', { tag: `%${query.tag}%` });
     }
 
     if ('author' in query) {
       const author = await this.userRepository.findOne({username: query.author});
-      qb.andWhere("article.authorId = :id", { id: author.id });
+      qb.andWhere('article.authorId = :id', { id: author.id });
     }
 
     if ('favorited' in query) {
       const author = await this.userRepository.findOne({username: query.favorited});
       const ids = author.favorites.map(el => el.id);
-      qb.andWhere("article.authorId IN (:ids)", { ids });
+      qb.andWhere('article.authorId IN (:ids)', { ids });
     }
 
     qb.orderBy('article.created', 'DESC');
@@ -63,7 +65,7 @@ export class ArticleService {
     return {articles, articlesCount};
   }
 
-  async findFeed(userId: number, query): Promise<ArticlesRO> {
+  public async findFeed(userId: number, query: any): Promise<ArticlesRO> {
     const _follows = await this.followsRepository.find( {followerId: userId});
     const ids = _follows.map(el => el.followingId);
 
@@ -88,12 +90,12 @@ export class ArticleService {
     return {articles, articlesCount};
   }
 
-  async findOne(where): Promise<ArticleRO> {
+  public async findOne(where: any): Promise<ArticleRO> {
     const article = await this.articleRepository.findOne(where);
     return {article};
   }
 
-  async addComment(slug: string, commentData): Promise<ArticleRO> {
+  public async addComment(slug: string, commentData: any): Promise<ArticleRO> {
     let article = await this.articleRepository.findOne({slug});
 
     const comment = new Comment();
@@ -103,10 +105,10 @@ export class ArticleService {
 
     await this.commentRepository.save(comment);
     article = await this.articleRepository.save(article);
-    return {article}
+    return {article};
   }
 
-  async deleteComment(slug: string, id: string): Promise<ArticleRO> {
+  public async deleteComment(slug: string, id: string): Promise<ArticleRO> {
     let article = await this.articleRepository.findOne({slug});
 
     const comment = await this.commentRepository.findOne(id);
@@ -123,7 +125,7 @@ export class ArticleService {
 
   }
 
-  async favorite(id: number, slug: string): Promise<ArticleRO> {
+  public async favorite(id: number, slug: string): Promise<ArticleRO> {
     let article = await this.articleRepository.findOne({slug});
     const user = await this.userRepository.findOne(id);
 
@@ -139,7 +141,7 @@ export class ArticleService {
     return {article};
   }
 
-  async unFavorite(id: number, slug: string): Promise<ArticleRO> {
+  public async unFavorite(id: number, slug: string): Promise<ArticleRO> {
     let article = await this.articleRepository.findOne({slug});
     const user = await this.userRepository.findOne(id);
 
@@ -157,14 +159,14 @@ export class ArticleService {
     return {article};
   }
 
-  async findComments(slug: string): Promise<CommentsRO> {
+  public async findComments(slug: string): Promise<CommentsRO> {
     const article = await this.articleRepository.findOne({slug});
     return {comments: article.comments};
   }
 
-  async create(userId: number, articleData: CreateArticleDto): Promise<ArticleEntity> {
+  public async create(userId: number, articleData: CreateArticleDto): Promise<ArticleEntity> {
 
-    let article = new ArticleEntity();
+    const article = new ArticleEntity();
     article.title = articleData.title;
     article.description = articleData.description;
     article.slug = this.slugify(articleData.title);
@@ -187,18 +189,18 @@ export class ArticleService {
 
   }
 
-  async update(slug: string, articleData: any): Promise<ArticleRO> {
-    let toUpdate = await this.articleRepository.findOne({ slug: slug});
-    let updated = Object.assign(toUpdate, articleData);
+  public async update(slug: string, articleData: any): Promise<ArticleRO> {
+    const toUpdate = await this.articleRepository.findOne({ slug});
+    const updated = Object.assign(toUpdate, articleData);
     const article = await this.articleRepository.save(updated);
     return {article};
   }
 
-  async delete(slug: string): Promise<DeleteResult> {
-    return await this.articleRepository.delete({ slug: slug});
+  public async delete(slug: string): Promise<DeleteResult> {
+    return await this.articleRepository.delete({ slug});
   }
 
-  slugify(title: string) {
-    return slug(title, {lower: true}) + '-' + (Math.random() * Math.pow(36, 6) | 0).toString(36)
+  public slugify(title: string): any {
+    return slug(title, {lower: true}) + '-' + (Math.random() * Math.pow(36, 6) | 0).toString(36);
   }
 }

@@ -1,1 +1,8 @@
+// Auth
 export const SECRET = 'secret-key';
+// Logger
+export const loggerSettings = {
+  logLevel: 'info',
+  serviceName: 'Logger',
+  logAppenders: 'console',
+};

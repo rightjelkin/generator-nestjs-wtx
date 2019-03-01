@@ -1,3 +1,3 @@
 export class CreateCommentDto {
-  readonly body: string;
+  public readonly body: string;
 }

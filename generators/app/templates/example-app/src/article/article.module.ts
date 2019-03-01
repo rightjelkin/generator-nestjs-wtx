@@ -1,23 +1,24 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
-import { ArticleController } from './article.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ArticleEntity } from './article.entity';
-import { Comment } from './comment.entity';
-import { UserEntity } from '../user/user.entity';
+
 import { FollowsEntity } from '../profile/follows.entity';
-import { ArticleService } from './article.service';
 import { AuthMiddleware } from '../user/auth.middleware';
+import { UserEntity } from '../user/user.entity';
 import { UserModule } from '../user/user.module';
+import { ArticleController } from './article.controller';
+import { ArticleEntity } from './article.entity';
+import { ArticleService } from './article.service';
+import { Comment } from './comment.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([ArticleEntity, Comment, UserEntity, FollowsEntity]), UserModule],
   providers: [ArticleService],
   controllers: [
-    ArticleController
-  ]
+    ArticleController,
+  ],
 })
 export class ArticleModule implements NestModule {
-  public configure(consumer: MiddlewareConsumer) {
+  public configure(consumer: MiddlewareConsumer): void {
     consumer
       .apply(AuthMiddleware)
       .forRoutes(

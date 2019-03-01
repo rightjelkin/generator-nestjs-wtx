@@ -1,15 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+
 import { ArticleEntity } from './article.entity';
 
 @Entity()
 export class Comment {
 
   @PrimaryGeneratedColumn()
-  id: number;
+  public id: number;
 
   @Column()
-  body: string;
+  public body: string;
 
   @ManyToOne(type => ArticleEntity, article => article.comments)
-  article: ArticleEntity;
+  public article: ArticleEntity;
 }
