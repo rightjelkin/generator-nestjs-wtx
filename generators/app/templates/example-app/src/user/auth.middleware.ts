@@ -5,7 +5,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { HttpStatus, Injectable, Middleware, NestMiddleware } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 
-import { SECRET } from '../config';
+import { SECRET } from '../config/auth';
 import { UserService } from './user.service';
 
 @Injectable()

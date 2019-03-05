@@ -1,4 +1,6 @@
 import { IHelmetConfiguration } from 'helmet';
+import { ConfigModule, ConfigService } from 'nestjs-config';
+import * as path from 'path';
 import { Connection } from 'typeorm';
 
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
@@ -21,7 +23,11 @@ const allRoutes = {
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot(),
+    ConfigModule.load(path.resolve(__dirname, 'config', '**/!(*.d).{ts,js}')),
+    TypeOrmModule.forRootAsync({
+      useFactory: (config: ConfigService) => config.get('database'),
+      inject: [ConfigService],
+    }),
     ArticleModule,
     UserModule,
     ProfileModule,

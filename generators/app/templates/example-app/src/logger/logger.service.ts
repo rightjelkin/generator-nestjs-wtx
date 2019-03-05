@@ -36,8 +36,8 @@ export class LoggerService {
 
     this.logger = winston.createLogger({
       level,
-      format: format.combine(
-          format.timestamp({
+      format: winston.format.combine(
+        winston.format.timestamp({
             format: timeFormat,
           }),
           this.getLoggerFormat()
@@ -79,8 +79,8 @@ export class LoggerService {
     this.logger.error(trace, [{ context, reqId: this.requestId }]);
   }
 
-  private getLoggerFormat(): void {
-    return format.printf(info => {
+  private getLoggerFormat(): any {
+    return winston.format.printf(info => {
       const level = this.colorizeLevel(info.level);
       let message = info.message;
       if (typeof info.message === 'object') {

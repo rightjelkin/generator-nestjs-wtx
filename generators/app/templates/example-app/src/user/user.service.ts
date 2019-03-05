@@ -1,12 +1,13 @@
 import { validate } from 'class-validator';
 import * as crypto from 'crypto';
+import { ConfigService } from 'nestjs-config';
 import { DeleteResult, getRepository, Repository } from 'typeorm';
 
 import { Component, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { HttpException } from '@nestjs/common/exceptions/http.exception';
 import { InjectRepository } from '@nestjs/typeorm';
 
-import { SECRET } from '../config';
+import { SECRET } from '../config/auth';
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import { UserEntity } from './user.entity';
 import { UserRO } from './user.interface';
@@ -17,8 +18,11 @@ export class UserService {
   private readonly logger = new Logger(UserService.name);
   constructor(
     @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>
-  ) {}
+    private readonly userRepository: Repository<UserEntity>,
+    private readonly config: ConfigService
+  ) {
+    this.config = config;
+  }
 
   public async findAll(): Promise<UserEntity[]> {
     return await this.userRepository.find();
@@ -34,7 +38,6 @@ export class UserService {
   }
 
   public async create(dto: CreateUserDto): Promise<UserRO> {
-    // check uniqueness of username/email
     const {username, email, password} = dto;
     const qb = await getRepository(UserEntity)
       .createQueryBuilder('user')
